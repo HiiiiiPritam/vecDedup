@@ -1,0 +1,6 @@
+bin/
+data/
+results-quick/
+results-log.txt
+.vecdedup/
+*.vdv

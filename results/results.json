@@ -1,0 +1,881 @@
+{
+  "env": {
+    "cpus": "16",
+    "go": "go1.26.3",
+    "os": "windows/amd64",
+    "quick": "false",
+    "time": "2026-11-21T13:25:34+05:30"
+  },
+  "scenarios": [
+    {
+      "dataset": "synthetic-50000x384",
+      "scenario": "edit-1%",
+      "snapshots": 4,
+      "logical_bytes": 308800064,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 308800064,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 308807188,
+          "ratio": 0.9999769305888048,
+          "incremental_ratio": 0.9999769305888048
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 210578088,
+          "ratio": 1.4664396800867525,
+          "incremental_ratio": 1.7367244986806296
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 101484620,
+          "ratio": 3.0428262331770077,
+          "incremental_ratio": 9.660304714978524
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 69081419,
+          "ratio": 4.470088606604911,
+          "incremental_ratio": 94.82551985132541
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 3858414,
+          "ratio": 80.03290056484349,
+          "incremental_ratio": 1063.424575387879
+        }
+      ],
+      "lossy_recall10": 0.6789999999999999
+    },
+    {
+      "dataset": "synthetic-50000x384",
+      "scenario": "edit-5%",
+      "snapshots": 4,
+      "logical_bytes": 308800064,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 308800064,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 308807188,
+          "ratio": 0.9999769305888048,
+          "incremental_ratio": 0.9999769305888048
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 306403556,
+          "ratio": 1.0078214105321937,
+          "incremental_ratio": 1.0105596832672732
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 172685644,
+          "ratio": 1.7882208204869654,
+          "incremental_ratio": 2.4334016969169814
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 78309732,
+          "ratio": 3.943316572708996,
+          "incremental_ratio": 19.844582335891936
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 4222043,
+          "ratio": 73.13996186206536,
+          "incremental_ratio": 398.33793359659865
+        }
+      ],
+      "lossy_recall10": 0.6570000000000004
+    },
+    {
+      "dataset": "synthetic-50000x384",
+      "scenario": "edit-10%",
+      "snapshots": 4,
+      "logical_bytes": 308800064,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 308800064,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 308807188,
+          "ratio": 0.9999769305888048,
+          "incremental_ratio": 0.9999769305888048
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 308894304,
+          "ratio": 0.9996949118233012,
+          "incremental_ratio": 0.9996949118233012
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 228168046,
+          "ratio": 1.353388738754418,
+          "incremental_ratio": 1.53725862107532
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 89805226,
+          "ratio": 3.438553386636987,
+          "incremental_ratio": 9.997330937657935
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 4664240,
+          "ratio": 66.20586933776993,
+          "incremental_ratio": 226.25743127529643
+        }
+      ],
+      "lossy_recall10": 0.6640000000000004
+    },
+    {
+      "dataset": "synthetic-50000x384",
+      "scenario": "edit-25%",
+      "snapshots": 4,
+      "logical_bytes": 308800064,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 308800064,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 308807188,
+          "ratio": 0.9999769305888048,
+          "incremental_ratio": 0.9999769305888048
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 308894304,
+          "ratio": 0.9996949118233012,
+          "incremental_ratio": 0.9996949118233012
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 291811052,
+          "ratio": 1.0582192205660532,
+          "incremental_ratio": 1.080723959471628
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 124339097,
+          "ratio": 2.4835314993481092,
+          "incremental_ratio": 4.013861545618177
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 5992232,
+          "ratio": 51.53339590322938,
+          "incremental_ratio": 98.48594810778171
+        }
+      ],
+      "lossy_recall10": 0.6430000000000003
+    },
+    {
+      "dataset": "synthetic-50000x384",
+      "scenario": "mixed-5%",
+      "snapshots": 4,
+      "logical_bytes": 311057392,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 311057392,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 311064570,
+          "ratio": 0.9999769244051163,
+          "incremental_ratio": 0.999976922363783
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 311152352,
+          "ratio": 0.9996948118843081,
+          "incremental_ratio": 0.9996947788928712
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 152593534,
+          "ratio": 2.0384703325633704,
+          "incremental_ratio": 3.1146382742435543
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 75538775,
+          "ratio": 4.117850627045514,
+          "incremental_ratio": 26.27688615966966
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 4137711,
+          "ratio": 75.17620056113151,
+          "incremental_ratio": 470.45846577238456
+        }
+      ],
+      "lossy_recall10": 0.6490000000000004
+    },
+    {
+      "dataset": "synthetic-50000x384",
+      "scenario": "reembed-noise",
+      "snapshots": 4,
+      "logical_bytes": 308800064,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 308800064,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 308807188,
+          "ratio": 0.9999769305888048,
+          "incremental_ratio": 0.9999769305888048
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 308894304,
+          "ratio": 0.9996949118233012,
+          "incremental_ratio": 0.9996949118233012
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 310041224,
+          "ratio": 0.9959967904139096,
+          "incremental_ratio": 0.9959964049181776
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 117378280,
+          "ratio": 2.6308109473064354,
+          "incremental_ratio": 4.56451533115138
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 12486797,
+          "ratio": 24.730126068358445,
+          "incremental_ratio": 26.18082718283732
+        }
+      ],
+      "lossy_recall10": 0.6650000000000005
+    },
+    {
+      "dataset": "synthetic-50000x384",
+      "scenario": "compaction-shuffle",
+      "snapshots": 4,
+      "logical_bytes": 304198944,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 304198944,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 304205969,
+          "ratio": 0.9999769070934963,
+          "incremental_ratio": 0.9999768991029822
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 304291864,
+          "ratio": 0.9996946352795025,
+          "incremental_ratio": 0.9996945412298172
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 305421184,
+          "ratio": 0.9959981819728654,
+          "incremental_ratio": 0.9959982619177854
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 66774043,
+          "ratio": 4.555646630532766,
+          "incremental_ratio": 1681.411266249398
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 3770971,
+          "ratio": 80.6685980878665,
+          "incremental_ratio": 1741.5372245749709
+        }
+      ],
+      "lossy_recall10": 0.6790000000000002
+    },
+    {
+      "dataset": "synthetic-50000x384",
+      "scenario": "new-model",
+      "snapshots": 4,
+      "logical_bytes": 308800064,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 308800064,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 308807188,
+          "ratio": 0.9999769305888048,
+          "incremental_ratio": 0.9999769305888048
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 308894304,
+          "ratio": 0.9996949118233012,
+          "incremental_ratio": 0.9996949118233012
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 310042984,
+          "ratio": 0.9959911365064142,
+          "incremental_ratio": 0.9959888663949504
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 266561822,
+          "ratio": 1.1584557071342347,
+          "incremental_ratio": 1.1584474934082551
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 14559334,
+          "ratio": 21.209765776374113,
+          "incremental_ratio": 21.21130716301848
+        }
+      ],
+      "lossy_recall10": 0.644
+    },
+    {
+      "dataset": "sift-100kx128",
+      "scenario": "edit-1%",
+      "snapshots": 4,
+      "logical_bytes": 208000064,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 208000064,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 59815136,
+          "ratio": 3.477381778418091,
+          "incremental_ratio": 3.4312814613770457
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 59089831,
+          "ratio": 3.520065305314547,
+          "incremental_ratio": 3.5507017174534075
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 30125398,
+          "ratio": 6.904475220543144,
+          "incremental_ratio": 11.521879377481913
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 14685313,
+          "ratio": 14.163815507371208,
+          "incremental_ratio": 86.22002570019207
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 3245387,
+          "ratio": 64.09098945672734,
+          "incremental_ratio": 504.58834983487674
+        }
+      ],
+      "lossy_recall10": 0.551
+    },
+    {
+      "dataset": "sift-100kx128",
+      "scenario": "edit-5%",
+      "snapshots": 4,
+      "logical_bytes": 208000064,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 208000064,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 68226121,
+          "ratio": 3.048686645984168,
+          "incremental_ratio": 2.895589152257697
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 71565169,
+          "ratio": 2.9064427137732323,
+          "incremental_ratio": 2.7654518377299304
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 62372130,
+          "ratio": 3.33482380672265,
+          "incremental_ratio": 3.4071416374988495
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 20861299,
+          "ratio": 9.970618991655314,
+          "incremental_ratio": 19.535876310891336
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 3406411,
+          "ratio": 61.061352843212404,
+          "incremental_ratio": 331.7829884705447
+        }
+      ],
+      "lossy_recall10": 0.45699999999999996
+    },
+    {
+      "dataset": "sift-100kx128",
+      "scenario": "edit-10%",
+      "snapshots": 4,
+      "logical_bytes": 208000064,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 208000064,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 77706581,
+          "ratio": 2.6767367875830232,
+          "incremental_ratio": 2.462295954845168
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 80855877,
+          "ratio": 2.5724792274530643,
+          "incremental_ratio": 2.37439247724507
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 81547114,
+          "ratio": 2.5506735161712775,
+          "incremental_ratio": 2.401435023238033
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 28556777,
+          "ratio": 7.283737376945584,
+          "incremental_ratio": 9.9484820566108
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 3566324,
+          "ratio": 58.323378358219834,
+          "incremental_ratio": 247.57982542453578
+        }
+      ],
+      "lossy_recall10": 0.4469999999999999
+    },
+    {
+      "dataset": "sift-100kx128",
+      "scenario": "edit-25%",
+      "snapshots": 4,
+      "logical_bytes": 208000064,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 208000064,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 102013683,
+          "ratio": 2.038942795546358,
+          "incremental_ratio": 1.7795502701407813
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 104505855,
+          "ratio": 1.9903197194071087,
+          "incremental_ratio": 1.745923624930282
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 110287522,
+          "ratio": 1.885980029544956,
+          "incremental_ratio": 1.6648602724824744
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 51643073,
+          "ratio": 4.027646921785618,
+          "incremental_ratio": 4.024033480980063
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 5735310,
+          "ratio": 36.26657739511901,
+          "incremental_ratio": 55.73249553604283
+        }
+      ],
+      "lossy_recall10": 0.19199999999999995
+    },
+    {
+      "dataset": "sift-100kx128",
+      "scenario": "mixed-5%",
+      "snapshots": 4,
+      "logical_bytes": 209518984,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 209518984,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 66737525,
+          "ratio": 3.1394479192927816,
+          "incremental_ratio": 3.006863738300962
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 70050997,
+          "ratio": 2.9909493507993896,
+          "incremental_ratio": 2.8693988178443894
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 54224625,
+          "ratio": 3.863908399550942,
+          "incremental_ratio": 4.185028017314843
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 19285664,
+          "ratio": 10.86397564532909,
+          "incremental_ratio": 24.575184143473088
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 3379759,
+          "ratio": 61.99228524874111,
+          "incremental_ratio": 355.144392212565
+        }
+      ],
+      "lossy_recall10": 0.53
+    },
+    {
+      "dataset": "sift-100kx128",
+      "scenario": "reembed-noise",
+      "snapshots": 4,
+      "logical_bytes": 208000064,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 208000064,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 93172342,
+          "ratio": 2.2324228363820673,
+          "incremental_ratio": 1.9791614660831964
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 96057912,
+          "ratio": 2.165361079262268,
+          "incremental_ratio": 1.928233924170395
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 104659156,
+          "ratio": 1.9874043700486177,
+          "incremental_ratio": 1.7712540542970951
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 60661751,
+          "ratio": 3.4288503145911498,
+          "incremental_ratio": 3.26457166750691
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 11021746,
+          "ratio": 18.87178891620257,
+          "incremental_ratio": 19.29375097860101
+        }
+      ],
+      "lossy_recall10": 0.5720000000000001
+    },
+    {
+      "dataset": "sift-100kx128",
+      "scenario": "compaction-shuffle",
+      "snapshots": 4,
+      "logical_bytes": 204900864,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 204900864,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 57033994,
+          "ratio": 3.5926094181655945,
+          "incremental_ratio": 3.5822476691856435
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 60246217,
+          "ratio": 3.401057762680767,
+          "incremental_ratio": 3.3909110382679155
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 66020709,
+          "ratio": 3.103584725210994,
+          "incremental_ratio": 3.0929816952937155
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 13141119,
+          "ratio": 15.592345218089875,
+          "incremental_ratio": 576.6992467874371
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 3191725,
+          "ratio": 64.1975308023091,
+          "incremental_ratio": 598.4354190394558
+        }
+      ],
+      "lossy_recall10": 0.5760000000000001
+    },
+    {
+      "dataset": "sift-100kx128",
+      "scenario": "new-model",
+      "snapshots": 4,
+      "logical_bytes": 208000064,
+      "methods": [
+        {
+          "method": "full-copy",
+          "physical_bytes": 208000064,
+          "ratio": 1,
+          "incremental_ratio": 1
+        },
+        {
+          "method": "zstd",
+          "physical_bytes": 170354721,
+          "ratio": 1.2209820941798262,
+          "incremental_ratio": 0.9999768274671859
+        },
+        {
+          "method": "fixed128K+zstd",
+          "physical_bytes": 171202528,
+          "ratio": 1.2149357046877252,
+          "incremental_ratio": 0.9996947087098144
+        },
+        {
+          "method": "fastcdc8K+zstd",
+          "physical_bytes": 173215704,
+          "ratio": 1.2008152794275513,
+          "incremental_ratio": 0.9959795637314613
+        },
+        {
+          "method": "vecdedup-lossless",
+          "physical_bytes": 165952648,
+          "ratio": 1.253369961291609,
+          "incremental_ratio": 1.0190975423686406
+        },
+        {
+          "method": "vecdedup-lossy(M=D/8)",
+          "physical_bytes": 11835628,
+          "ratio": 17.574062314226165,
+          "incremental_ratio": 17.529269151057758
+        }
+      ],
+      "lossy_recall10": 0.5469999999999999
+    }
+  ],
+  "graph": [
+    {
+      "dataset": "sift-50000x128",
+      "churn": 0.01,
+      "nodes": 50051,
+      "touched_nodes": 9542,
+      "edges_added": 15837,
+      "edges_removed": 12146,
+      "total_edges": 881228,
+      "increment_bytes": {
+        "fastcdc8K+zstd": 10823748,
+        "fixed128K+zstd": 10520692,
+        "full-copy": 33063588,
+        "vecdedup(vectors+TGIS)": 308705,
+        "zstd": 10158920
+      },
+      "flat_file_bytes": 33063588,
+      "recall_before": 0.9900000000000001,
+      "recall_after": 0.9950000000000001,
+      "recall_restored": 0.9950000000000001
+    },
+    {
+      "dataset": "sift-50000x128",
+      "churn": 0.05,
+      "nodes": 50264,
+      "touched_nodes": 29833,
+      "edges_added": 77316,
+      "edges_removed": 58858,
+      "total_edges": 896002,
+      "increment_bytes": {
+        "fastcdc8K+zstd": 11851420,
+        "fixed128K+zstd": 10954397,
+        "full-copy": 33203792,
+        "vecdedup(vectors+TGIS)": 1044688,
+        "zstd": 10568651
+      },
+      "flat_file_bytes": 33203792,
+      "recall_before": 0.9900000000000001,
+      "recall_after": 0.9930000000000001,
+      "recall_restored": 0.9930000000000001
+    },
+    {
+      "dataset": "sift-50000x128",
+      "churn": 0.1,
+      "nodes": 50554,
+      "touched_nodes": 40855,
+      "edges_added": 149213,
+      "edges_removed": 112165,
+      "total_edges": 914627,
+      "increment_bytes": {
+        "fastcdc8K+zstd": 12378320,
+        "fixed128K+zstd": 11433781,
+        "full-copy": 33396412,
+        "vecdedup(vectors+TGIS)": 1888762,
+        "zstd": 11016655
+      },
+      "flat_file_bytes": 33396412,
+      "recall_before": 0.9900000000000001,
+      "recall_after": 0.9915000000000004,
+      "recall_restored": 0.9915000000000004
+    }
+  ],
+  "lossy": [
+    {
+      "dataset": "synthetic-50000x384",
+      "pq_m": 24,
+      "bytes_per_vec": 26,
+      "compression": 31.666455420234783,
+      "recall10": 0.6025000000000001,
+      "recall100": 0.7298499999999999
+    },
+    {
+      "dataset": "synthetic-50000x384",
+      "pq_m": 48,
+      "bytes_per_vec": 50,
+      "compression": 21.217109014990218,
+      "recall10": 0.7420000000000003,
+      "recall100": 0.8307500000000004
+    },
+    {
+      "dataset": "synthetic-50000x384",
+      "pq_m": 96,
+      "bytes_per_vec": 98,
+      "compression": 12.680100126801001,
+      "recall10": 0.8845000000000023,
+      "recall100": 0.9353500000000002
+    },
+    {
+      "dataset": "synthetic-50000x384",
+      "pq_m": 192,
+      "bytes_per_vec": 194,
+      "compression": 7.090721185127708,
+      "recall10": 0.9640000000000013,
+      "recall100": 0.9838999999999999
+    },
+    {
+      "dataset": "sift-100kx128",
+      "pq_m": 8,
+      "bytes_per_vec": 10,
+      "compression": 24.398620914873213,
+      "recall10": 0.43249999999999994,
+      "recall100": 0.5492000000000004
+    },
+    {
+      "dataset": "sift-100kx128",
+      "pq_m": 16,
+      "bytes_per_vec": 18,
+      "compression": 17.71016430604935,
+      "recall10": 0.6320000000000002,
+      "recall100": 0.7086
+    },
+    {
+      "dataset": "sift-100kx128",
+      "pq_m": 32,
+      "bytes_per_vec": 34,
+      "compression": 11.481048652489191,
+      "recall10": 0.7659999999999998,
+      "recall100": 0.8315500000000006
+    },
+    {
+      "dataset": "sift-100kx128",
+      "pq_m": 64,
+      "bytes_per_vec": 66,
+      "compression": 6.644044546785445,
+      "recall10": 0.9100000000000021,
+      "recall100": 0.9424499999999989
+    }
+  ],
+  "latency": [
+    {
+      "n": 100000,
+      "dim": 128,
+      "changed": 1000,
+      "full_commit_ms": 133.438,
+      "incremental_commit_ms": 96.155,
+      "branch_ms": 2.0821799999999997,
+      "checkout_ms": 45.076,
+      "initial_commit_ms": 311.11
+    },
+    {
+      "n": 1000000,
+      "dim": 128,
+      "changed": 1000,
+      "full_commit_ms": 1365.586,
+      "incremental_commit_ms": 326.471,
+      "branch_ms": 0.8092199999999999,
+      "checkout_ms": 898.124,
+      "initial_commit_ms": 4030.202
+    }
+  ]
+}
