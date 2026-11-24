@@ -8,6 +8,9 @@ of byte chunks.
 * `docs/RESEARCH.md`: literature review and what it changed in the spec (read first)
 * `docs/DESIGN.md`: architecture, data model, algorithms, limitations
 * `results/RESULTS.md`: measured results; `results/*.png` charts for slides
+* `docs/LEARNING_NOTES.md`: beginner-friendly explanations of every concept and feature, with worked examples
+* `docs/PPT_CONTENT.md`: slide-by-slide content, formulas, numbers, demo script and Q&A for the presentation
+* `docs/STUDY_GUIDE.md`: compact single-file reference (good to give to a study chatbot)
 
 ## Quick start
 
@@ -33,6 +36,15 @@ bin/vecdedup -C demo stats                                # dedup ratio
 ```
 
 Lossy mode: `commit data.vdv --lossy --pq-m 48` (PQ sub-spaces; default dim/8).
+
+### Web demo UI
+
+```powershell
+go run ./cmd/vddemo        # then open http://localhost:8080
+```
+
+Drives the real engine: generate, churn, commit, branch, diff, search, verify, plus a
+"Run full scenario" button and a results tab. It keeps its repo in a temp dir.
 
 ### Benchmarks
 

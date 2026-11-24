@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>VecDedup — live demo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#0e1116;--panel:#161b22;--panel2:#1c232c;--line:#2a323d;--tx:#e6edf3;--mut:#8b96a3;
+--acc:#4ea1ff;--good:#3fb950;--warn:#d29922;--bad:#f85149;--full:#6e7681;--zstd:#d29922;--vd:#3fb950}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,Segoe UI,Roboto,sans-serif}
+header{padding:14px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+header h1{font-size:18px;margin:0}header h1 span{color:var(--acc)}
+header .sub{color:var(--mut);font-size:13px;flex:1}
+nav button{background:none;border:1px solid var(--line);color:var(--mut);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px}
+nav button.on{color:var(--tx);border-color:var(--acc);background:#10253d}
+main{padding:18px 24px;max-width:1500px;margin:auto}
+.grid{display:grid;grid-template-columns:340px 1fr;gap:18px}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:16px}
+.card h3{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);display:flex;gap:8px;align-items:center}
+.num{background:var(--acc);color:#000;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+label{display:block;color:var(--mut);font-size:12px;margin:8px 0 3px}
+input,select{background:var(--panel2);border:1px solid var(--line);color:var(--tx);border-radius:6px;padding:6px 8px;width:100%;font:inherit}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.chk{display:flex;gap:8px;align-items:center;color:var(--tx);margin:8px 0;font-size:13px}
+.chk input{width:auto}
+button.b{background:var(--acc);color:#001;border:0;border-radius:6px;padding:8px 12px;font-weight:600;cursor:pointer;margin-top:10px;width:100%}
+button.b.sec{background:var(--panel2);color:var(--tx);border:1px solid var(--line)}
+button.b.go{background:var(--good)}
+button.b:disabled{opacity:.5;cursor:wait}
+.hint{color:var(--mut);font-size:12px;margin-top:6px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi .v{font-size:26px;font-weight:700}.kpi .l{color:var(--mut);font-size:12px}
+.kpi.big .v{color:var(--good)}
+.bars .bar{display:grid;grid-template-columns:110px 1fr 110px;gap:10px;align-items:center;margin:8px 0}
+.bars .track{background:var(--panel2);border-radius:5px;height:22px;overflow:hidden}
+.bars .fill{height:100%;border-radius:5px;transition:width .6s}
+.bars .val{text-align:right;font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{color:var(--mut);font-weight:500;text-align:left;border-bottom:1px solid var(--line);padding:6px 8px;font-size:12px}
+td{padding:7px 8px;border-bottom:1px solid #20262e;vertical-align:top}
+tr.sel td{background:#10253d}
+code,.mono{font-family:Consolas,Menlo,monospace;font-size:12.5px}
+.tag{display:inline-block;border-radius:10px;padding:1px 8px;font-size:11px;border:1px solid var(--line);color:var(--mut);margin-right:4px}
+.tag.g{color:var(--good);border-color:#23622f}.tag.b{color:var(--acc);border-color:#1d4a7c}.tag.w{color:var(--warn);border-color:#6b5217}
+.seg{display:flex;height:10px;border-radius:5px;overflow:hidden;min-width:120px;background:var(--panel2)}
+.seg i{display:block;height:100%}
+#log{background:#0a0d11;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font:12.5px/1.5 Consolas,monospace;max-height:230px;overflow:auto;white-space:pre-wrap}
+#log .e{color:var(--bad)}#log .o{color:var(--good)}#log .t{color:var(--acc)}
+.acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.acts .card{margin:0}
+.hidden{display:none}
+.res img{width:100%;border-radius:8px;background:#fff;margin:8px 0}
+.res .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:1000px){.res .two{grid-template-columns:1fr}}
+.pill{font-size:12px;color:var(--mut)}
+.explain{color:var(--mut);max-width:900px}
+.explain b{color:var(--tx)}
+.legend span{margin-right:14px;font-size:12px;color:var(--mut)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Vec<span>Dedup</span></h1>
+  <div class="sub">Space-efficient snapshots of vector embeddings and their HNSW indexes: per-vector XOR deltas instead of byte chunks</div>
+  <nav><button id="t-demo" class="on" onclick="tab('demo')">Live demo</button>
+  <button id="t-res" onclick="tab('res')">Benchmark results</button>
+  <button id="t-how" onclick="tab('how')">How it works</button></nav>
+</header>
+
+<main>
+<!-- ============================ LIVE DEMO ============================ -->
+<section id="demo">
+<div class="grid">
+  <div>
+    <div class="card" style="border-color:#23622f">
+      <h3>Guided demo</h3>
+      <button class="b go" id="auto" onclick="autoDemo()">▶ Run full scenario automatically</button>
+      <div class="hint">20k × 128-dim vectors → snapshot → 5% edit → snapshot → mixed churn → snapshot → restore &amp; search → verify. About 20 s.</div>
+    </div>
+    <div class="card">
+      <h3><span class="num">1</span> Generate embeddings</h3>
+      <div class="row"><div><label>Vectors</label><input id="g-n" type="number" value="20000"></div>
+      <div><label>Dimensions</label><input id="g-d" type="number" value="128"></div></div>
+      <button class="b sec" onclick="gen()">Generate new dataset (resets repo)</button>
+    </div>
+    <div class="card">
+      <h3><span class="num">2</span> Simulate data churn</h3>
+      <label>What changed in the vector DB?</label>
+      <select id="c-op">
+        <option value="edit">Edit: some vectors re-embedded</option>
+        <option value="mixed" selected>Mixed: add + edit + delete</option>
+        <option value="append">Append: new documents</option>
+        <option value="delete">Delete: documents removed</option>
+        <option value="shuffle">Compaction: rows reordered</option>
+        <option value="reembed">Re-embed with float noise</option>
+        <option value="newmodel">New embedding model (worst case)</option>
+      </select>
+      <label>Fraction of rows <span id="c-fv">5%</span></label>
+      <input id="c-f" type="range" min="1" max="30" value="5" oninput="c_fv.textContent=this.value+'%'">
+      <button class="b sec" onclick="churn()">Apply churn to working set</button>
+    </div>
+    <div class="card">
+      <h3><span class="num">3</span> Take snapshot</h3>
+      <div class="chk"><input type="checkbox" id="m-hnsw" checked><label style="margin:0;color:var(--tx)">Also snapshot the HNSW index (graph deltas)</label></div>
+      <div class="chk"><input type="checkbox" id="m-lossy"><label style="margin:0;color:var(--tx)">Lossy / semantic mode (residual product quantisation)</label></div>
+      <button class="b" onclick="commit()">Take snapshot</button>
+      <div class="hint" id="workinfo">No dataset yet.</div>
+    </div>
+    <div class="card">
+      <h3>Session</h3>
+      <button class="b sec" onclick="reset()" style="margin-top:0">Reset repository</button>
+    </div>
+  </div>
+
+  <div>
+    <div class="kpis">
+      <div class="kpi big"><div class="v" id="k-ratio">–</div><div class="l">dedup ratio (logical ÷ physical)</div></div>
+      <div class="kpi"><div class="v" id="k-snaps">0</div><div class="l">snapshots</div></div>
+      <div class="kpi"><div class="v" id="k-phys">–</div><div class="l">physical size on disk</div></div>
+      <div class="kpi"><div class="v" id="k-obj">0</div><div class="l">content-addressed objects</div></div>
+    </div>
+
+    <div class="card">
+      <h3>Storage used by all snapshots</h3>
+      <div class="legend"><span><i style="background:var(--full)"></i>Full copy per snapshot</span><span><i style="background:var(--zstd)"></i>zstd per snapshot</span><span><i style="background:var(--vd)"></i>VecDedup</span></div>
+      <div class="bars" id="bars"><div class="hint">Take at least one snapshot.</div></div>
+    </div>
+
+    <div class="card">
+      <h3>Snapshots</h3>
+      <table id="hist"><thead><tr><th>snapshot</th><th>what changed since previous</th><th>vectors</th><th>mode</th><th>segments (reused / delta / full)</th><th>new data</th><th>time</th></tr></thead><tbody></tbody></table>
+      <div class="hint" id="hnswnote"></div>
+    </div>
+
+    <div class="card">
+      <h3>Restore &amp; verify</h3>
+      <div class="acts">
+        <div class="card">
+          <h3>Search a snapshot</h3>
+          <label>Snapshot</label><select id="s-ref"></select>
+          <button class="b sec" onclick="search()">Restore HNSW &amp; query</button>
+          <button class="b sec" onclick="restore()">Restore &amp; check bit-exact</button>
+        </div>
+        <div class="card">
+          <h3>Integrity</h3>
+          <div class="hint" style="margin-top:0">Re-decodes every object and checks content hashes.</div>
+          <button class="b sec" onclick="verify()">Verify all snapshots</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Output</h3>
+      <div id="log">Ready. Press “Run full scenario automatically” or go step by step.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================ RESULTS ============================ -->
+<section id="res" class="hidden res">
+  <div class="kpis">
+    <div class="kpi big"><div class="v">94.8×</div><div class="l">incremental dedup, 1% edit, lossless (synthetic 50k×384)</div></div>
+    <div class="kpi big"><div class="v">80×</div><div class="l">cumulative, lossy mode, 1% edit</div></div>
+    <div class="kpi"><div class="v">301 KiB</div><div class="l">HNSW snapshot after 1% churn (vs 31.5 MiB full copy)</div></div>
+    <div class="kpi"><div class="v">327 ms</div><div class="l">incremental snapshot of 1M vectors (1 000 changed)</div></div>
+  </div>
+  <div class="card">
+    <h3>Dedup ratio vs. baselines: synthetic 50 000 × 384 (base + 3 churned snapshots)</h3>
+    <table>
+      <tr><th>scenario</th><th>zstd</th><th>FastCDC 8K + zstd</th><th>VecDedup lossless</th><th>VecDedup lossy</th><th>lossy R@10</th></tr>
+      <tr><td>edit 1%</td><td>1.00×</td><td>3.04×</td><td><b>4.47×</b> (incr. 94.8×)</td><td><b>80.0×</b></td><td>0.679</td></tr>
+      <tr><td>edit 5%</td><td>1.00×</td><td>1.79×</td><td><b>3.94×</b> (incr. 19.8×)</td><td><b>73.1×</b></td><td>0.657</td></tr>
+      <tr><td>edit 10%</td><td>1.00×</td><td>1.35×</td><td><b>3.44×</b> (incr. 10.0×)</td><td><b>66.2×</b></td><td>0.664</td></tr>
+      <tr><td>mixed 5%</td><td>1.00×</td><td>2.04×</td><td><b>4.12×</b> (incr. 26.3×)</td><td><b>75.2×</b></td><td>0.649</td></tr>
+      <tr><td>compaction shuffle</td><td>1.00×</td><td>1.00×</td><td><b>4.56×</b> (incr. 1681×)</td><td><b>80.7×</b></td><td>0.679</td></tr>
+      <tr><td>new embedding model (worst case)</td><td>1.00×</td><td>1.00×</td><td>1.16×</td><td>21.2×</td><td>0.644</td></tr>
+    </table>
+    <div class="hint">Byte-level tools (zstd, content-defined chunking) can't see that a reshuffled or lightly edited embedding set is "the same"; VecDedup works at vector granularity.</div>
+  </div>
+  <div class="card">
+    <h3>HNSW index snapshots (SIFT 50k×128): bytes added per snapshot after incremental update</h3>
+    <table>
+      <tr><th>churn</th><th>nodes touched</th><th>full copy</th><th>zstd</th><th>FastCDC+zstd</th><th>VecDedup</th><th>recall before / after / restored</th></tr>
+      <tr><td>1%</td><td>19%</td><td>31.5 MiB</td><td>9.7 MiB</td><td>10.3 MiB</td><td><b>301.5 KiB</b></td><td>0.990 / 0.995 / 0.995</td></tr>
+      <tr><td>5%</td><td>59%</td><td>31.7 MiB</td><td>10.1 MiB</td><td>11.3 MiB</td><td><b>1020 KiB</b></td><td>0.990 / 0.993 / 0.993</td></tr>
+      <tr><td>10%</td><td>81%</td><td>31.8 MiB</td><td>10.5 MiB</td><td>11.8 MiB</td><td><b>1.8 MiB</b></td><td>0.990 / 0.992 / 0.992</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>Latency (128-dim, 1 000 vectors changed)</h3>
+    <table>
+      <tr><th>vectors</th><th>initial snapshot</th><th>full-scan snapshot</th><th>incremental snapshot</th><th>restore</th></tr>
+      <tr><td>100 000</td><td>311 ms</td><td>133 ms</td><td><b>96 ms</b></td><td>45 ms</td></tr>
+      <tr><td>1 000 000</td><td>4030 ms</td><td>1366 ms</td><td><b>327 ms</b></td><td>898 ms</td></tr>
+    </table>
+  </div>
+  <div class="two">
+    <div class="card"><h3>Dedup on real SIFT-100k</h3><img src="/results/vectors_sift-100kx128.png"></div>
+    <div class="card"><h3>Dedup on synthetic 50k×384</h3><img src="/results/vectors_synthetic-50000x384.png"></div>
+    <div class="card"><h3>Lossy: compression vs recall</h3><img src="/results/lossy_tradeoff.png"></div>
+    <div class="card"><h3>HNSW graph snapshots</h3><img src="/results/graph_snapshots.png"></div>
+    <div class="card"><h3>Latency</h3><img src="/results/latency.png"></div>
+  </div>
+</section>
+
+<!-- ============================ HOW ============================ -->
+<section id="how" class="hidden">
+  <div class="card explain">
+    <h3>The problem</h3>
+    Vector databases are re-snapshotted constantly: nightly backups, re-embeds, A/B experiments on a new model.
+    Each snapshot is a multi-GB blob of float vectors and an HNSW graph. Generic dedup (zstd, rsync, content-defined chunking)
+    works on <b>bytes</b>: floats look like random noise to it, and one changed vector or a reordered file defeats it.
+  </div>
+  <div class="card explain">
+    <h3>The idea</h3>
+    <p><b>1. Segment by vector id.</b> Vectors are grouped by stable id (256 consecutive ids per segment), so row order, compaction and shuffling don't matter. Each segment is hashed (SHA-256) and stored in a content-addressed store; unchanged segments are never rewritten.</p>
+    <p><b>2. Delta-encode changed segments.</b> A changed segment is stored as a byte-shuffled XOR against its parent version, then zstd. Re-embedding noise shares exponent bits, which collapses to near-nothing.</p>
+    <p><b>3. Snapshot the HNSW graph too (TGIS).</b> Graph segments are stored as edge deltas (ΔE+ / ΔE−) against the previous snapshot, and the index is updated incrementally (insert / delete+repair), so a 1% churn touches ~19% of nodes, not 100%.</p>
+    <p><b>4. Merkle trees</b> over segments let integrity checks and change detection skip any identical subtree by comparing a single hash.</p>
+    <p><b>5. Optional semantic (lossy) mode.</b> Residual product quantisation with a drift-aware codebook: 10–80× smaller at a chosen recall.</p>
+  </div>
+  <div class="card explain">
+    <h3>What this demo is</h3>
+    This page is a thin UI over the same Go packages the CLI and benchmark harness use (<code>internal/repo</code>, <code>hnsw</code>, <code>quant</code>, <code>segment</code>, <code>cas</code>), with real data on disk. Nothing is mocked.
+    Build &amp; run: <code>go run ./cmd/vddemo</code>
+  </div>
+</section>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+let S=null, busy=false;
+const human=n=>{if(n==null)return'–';const u=['B','KiB','MiB','GiB'];let i=0,f=n;while(f>=1024&&i<3){f/=1024;i++}return (i?f.toFixed(2):f)+' '+u[i]};
+function tab(t){for(const x of['demo','res','how']){$(x).classList.toggle('hidden',x!==t);$('t-'+x).classList.toggle('on',x===t)}}
+function log(msg,cls){const l=$('log');const d=document.createElement('div');if(cls)d.className=cls;d.textContent=msg;l.appendChild(d);l.scrollTop=l.scrollHeight}
+async function api(path,body){
+  const r=await fetch('/api/'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});
+  const j=await r.json(); if(!r.ok) throw new Error(j.error||r.statusText); return j;
+}
+async function run(label,fn){
+  if(busy)return; busy=true; document.querySelectorAll('button').forEach(b=>b.disabled=true);
+  log('▶ '+label,'t');
+  const t0=performance.now();
+  try{const r=await fn(); log('   done in '+Math.round(performance.now()-t0)+' ms','o'); return r}
+  catch(e){log('   error: '+e.message,'e')}
+  finally{busy=false;document.querySelectorAll('button').forEach(b=>b.disabled=false)}
+}
+function render(st){
+  S=st;
+  const s=st.stats;
+  $('k-ratio').textContent=s.snapshots?s.ratio.toFixed(2)+'×':'–';
+  $('k-snaps').textContent=s.snapshots;$('k-phys').textContent=s.snapshots?human(s.physical):'–';$('k-obj').textContent=s.objects;
+    $('workinfo').textContent=st.work?`Working set: ${st.work.n.toLocaleString()} × ${st.work.dim} (${human(st.work.bytes)}). Last change: ${st.work.churn}.`:'No dataset yet.';
+  // bars
+  if(s.raw>0){
+    const max=Math.max(s.raw,s.zstd,s.physical);
+    const bar=(n,v,c)=>`<div class="bar"><div>${n}</div><div class="track"><div class="fill" style="width:${Math.max(1,v/max*100)}%;background:${c}"></div></div><div class="val">${human(v)}</div></div>`;
+    $('bars').innerHTML=bar('Full copy',s.raw,'var(--full)')+bar('zstd',s.zstd,'var(--zstd)')+bar('VecDedup',s.physical,'var(--vd)')+
+      `<div class="hint">VecDedup is <b>${(s.raw/s.physical).toFixed(1)}×</b> smaller than full copies and <b>${(s.zstd/s.physical).toFixed(1)}×</b> smaller than per-snapshot zstd.</div>`;
+  } else $('bars').innerHTML='<div class="hint">Take at least one snapshot.</div>';
+  // history
+  const total=st.commits.length;st.commits.forEach((c,i)=>c.no=total-i);
+  const tb=$('hist').querySelector('tbody');tb.innerHTML='';
+  for(const c of st.commits){
+    const x=c.stats;let segs='–',nw='–',tm='–';
+    if(x){
+      const tot=x.Segments||1;
+      segs=`<div class="seg"><i style="width:${x.SegReused/tot*100}%;background:var(--good)"></i><i style="width:${x.SegDelta/tot*100}%;background:var(--acc)"></i><i style="width:${x.SegFull/tot*100}%;background:var(--warn)"></i></div><span class="pill">${x.SegReused} / ${x.SegDelta} / ${x.SegFull}</span>`;
+      if(c.hasGraph) segs+=`<br><span class="pill">graph: ${x.GReused} / ${x.GDelta} / ${x.GFull} · ΔE+${x.EdgesAdded} ΔE−${x.EdgesRemoved}</span>`;
+      nw=human(x.NewBytes)+`<br><span class="pill">${x.DedupObjects} objs deduped</span>`;tm=x.Millis.toFixed(0)+' ms';
+    }
+    tb.insertAdjacentHTML('beforeend',`<tr><td><b>#${c.no}</b>${c.hasGraph?' <span class="tag g">+index</span>':''}</td><td>${c.no===1?'initial full snapshot':(c.churn||'')}</td><td>${c.count.toLocaleString()}</td><td><span class="tag ${c.mode==='lossy'?'w':''}">${c.mode}</span></td><td>${segs}</td><td>${nw}</td><td>${tm}</td></tr>`);
+  }
+  const last=st.commits.find(c=>c.stats&&c.stats.HNSWNote);$('hnswnote').textContent=last?'Latest index update: '+last.stats.HNSWNote:'';
+  // selects
+  const opts=st.commits.map(c=>`<option value="${c.short}">Snapshot #${c.no} · ${c.count.toLocaleString()} vectors${c.mode==='lossy'?' (lossy)':''}</option>`).join('');
+  const keep=id=>{const v=$(id).value;$(id).innerHTML=opts;if([...$(id).options].some(o=>o.value===v))$(id).value=v};
+  keep('s-ref');
+}
+async function refresh(){render(await api('state'))}
+async function gen(){return run('Generate dataset',async()=>{const r=await api('gen',{n:+$('g-n').value,dim:+$('g-d').value});render(r);log(`   ${r.work.n} vectors × ${r.work.dim} dims = ${human(r.work.bytes)} raw`)})}
+async function churn(){return run('Churn: '+$('c-op').value,async()=>{const r=await api('churn',{op:$('c-op').value,frac:$('c-f').value/100});render(r);log('   '+r.work.churn)})}
+async function commit(){return run('Take snapshot',async()=>{
+  const lossy=$('m-lossy').checked,h=$('m-hnsw').checked;
+  const msg=(S&&S.work?S.work.churn:'')||'snapshot';
+  const r=await api('commit',{message:msg,lossy,hnsw:h});render(r);
+  const c=r.commits.find(c=>c.stats)||r.commits[0];const x=c.stats;
+  log(`   snapshot #${r.commits.length}: ${x.Segments} segments = ${x.SegReused} reused, ${x.SegDelta} delta, ${x.SegFull} full; new data ${human(x.NewBytes)}`);
+  if(x.HNSWNote)log('   '+x.HNSWNote);
+})}
+async function reset(){return run('Reset',async()=>{render(await api('reset',{}))})}
+async function search(){return run('Search',async()=>{
+  const r=await api('search',{ref:$('s-ref').value,k:10});
+  log(`   restored ${r.nodes.toLocaleString()}-node HNSW index from snapshot in ${r.restoreMs.toFixed(0)} ms (no rebuild)`);
+  log(`   ${r.queries} queries in ${r.searchMs.toFixed(1)} ms, recall@${r.k} (ef=${r.ef}) vs exact = ${r.recall.toFixed(4)}`);
+  log(`   query 0 → ids ${r.sample.join(', ')}`);
+})}
+async function restore(){return run('Restore + compare',async()=>{
+  const r=await api('restore',{ref:$('s-ref').value});
+  log(`   restored snapshot: ${r.n.toLocaleString()} vectors in ${r.ms.toFixed(0)} ms`);
+  log(r.identical?'   ✔ bit-for-bit identical to the original data':'   ✘ MISMATCH: '+r.detail, r.identical?'o':'e');
+})}
+async function verify(){return run('Verify',async()=>{
+  const r=await api('verify',{});const bad=r.rows.filter(x=>!x.ok);
+  r.rows.forEach(x=>log(`   ${x.ok?'ok ':'BAD'} snapshot ${x.hash} ${x.err||''}`,x.ok?'o':'e'));
+  log(`   ${r.rows.length} snapshot(s) verified in ${r.ms.toFixed(0)} ms${bad.length?', '+bad.length+' FAILED':''}`);
+})}
+
+async function autoDemo(){
+  if(busy)return;
+  $('log').textContent='';
+  const step=async(label,fn)=>{await run(label,fn);await new Promise(r=>setTimeout(r,400))};
+  await step('Step 1: generate 20 000 × 128 embeddings',async()=>{render(await api('gen',{n:20000,dim:128}))});
+  await step('Step 2: first snapshot (full data + HNSW index build)',async()=>{render(await api('commit',{message:'base load',hnsw:true}))});
+  await step('Step 3: 5% of vectors edited',async()=>{render(await api('churn',{op:'edit',frac:.05}))});
+  await step('Step 4: snapshot #2: only the deltas are stored',async()=>{
+    const r=await api('commit',{message:'5% edit',hnsw:true});render(r);const x=r.commits.find(c=>c.stats).stats;
+    log(`   ${x.SegDelta} of ${x.Segments} segments stored as XOR deltas (${x.SegReused} reused unchanged): new data only ${human(x.NewBytes)}; graph ΔE+${x.EdgesAdded} ΔE−${x.EdgesRemoved}`);log('   '+x.HNSWNote)});
+  await step('Step 5: mixed add/edit/delete churn',async()=>{render(await api('churn',{op:'mixed',frac:.05}))});
+  await step('Step 6: snapshot #3',async()=>{render(await api('commit',{message:'mixed churn',hnsw:true}))});
+  await step('Step 7: restore the index from the latest snapshot and search',async()=>{
+    const r=await api('search',{ref:'main',k:10});log(`   ${r.nodes} nodes restored in ${r.restoreMs.toFixed(0)} ms, recall@10 = ${r.recall.toFixed(4)}`)});
+  await step('Step 8: restore the OLD snapshot #2, check bit-exact',async()=>{
+    const r=await api('restore',{ref:'main~1'});log(r.identical?`   ✔ ${r.ref} restored bit-for-bit (${r.n} vectors)`:'   ✘ mismatch',r.identical?'o':'e')});
+  await step('Step 9: verify integrity of all snapshots',async()=>{const r=await api('verify',{});log(`   ${r.rows.filter(x=>x.ok).length}/${r.rows.length} snapshots verified`)});
+  log('Scenario complete. See the storage bars above.','o');
+}
+refresh();
+</script>
+</body>
+</html>
